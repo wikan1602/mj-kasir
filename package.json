@@ -1,0 +1,15 @@
+{
+  "name": "toserba-mvp",
+  "version": "1.0.0",
+  "description": "MVP sistem transaksi toserba - offline-first, jalan lokal di laptop",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^5.2.1"
+  }
+}

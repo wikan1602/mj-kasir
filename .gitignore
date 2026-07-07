@@ -1,0 +1,14 @@
+node_modules/
+
+# Data transaksi asli toko — jangan pernah ikut ter-commit.
+toserba.db
+
+# Logo asli toko (identifiable) — sengaja tidak di-commit, tetap ada di
+# laptop ini secara lokal. Kalau clone repo ini di mesin lain, salin ulang
+# file logo-toko.webp ke folder public/ secara manual.
+public/logo-toko.jpg
+public/logo-toko.png
+public/logo-toko.webp
+
+# Sumber desain (berisi salinan logo asli juga) — bukan source code.
+Aplikasi kasir desktop sederhana.zip

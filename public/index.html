@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kasir Toserba</title>
+<link rel="icon" type="image/webp" href="logo-toko.webp">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- ===================== HEADER ===================== -->
+<header class="topbar">
+  <div class="brand">
+    <img class="brand-logo" src="logo-toko.webp" alt="Logo toko">
+    <div>
+      <div class="brand-name">Kasir <span id="nama-toko">Toserba</span></div>
+      <div class="brand-sub">KANTOKO</div>
+    </div>
+  </div>
+
+  <nav class="tabs">
+    <button class="tab active" data-view="kasir">Kasir</button>
+    <button class="tab" data-view="pesanan">Pesanan <span class="tab-badge" id="pesanan-badge" hidden>0</span></button>
+    <button class="tab" data-view="riwayat">Riwayat</button>
+  </nav>
+
+  <div class="topbar-right">
+    <div class="clock">
+      <div class="clock-time" id="jam">--:--</div>
+      <div class="clock-date" id="tanggal">—</div>
+    </div>
+    <div class="divider-v"></div>
+    <div class="today">
+      <div class="today-label">PENJUALAN HARI INI</div>
+      <div class="today-val"><span id="today-total">Rp 0</span> <span class="today-sub">· <span id="today-count">0</span> transaksi</span></div>
+    </div>
+    <button class="btn-tutorial" id="btn-tutorial">
+      <span class="btn-tutorial-icon">?</span> Tutorial
+    </button>
+  </div>
+</header>
+
+<!-- ===================== KASIR VIEW ===================== -->
+<main id="view-kasir" class="kasir-body view active">
+
+  <!-- ---------- NOTA (kiri) ---------- -->
+  <section class="nota-panel">
+    <div class="nota-head">
+      <div>
+        <div class="nota-title">Nota Transaksi</div>
+        <div class="nota-count" id="nota-count-label">Belum ada barang</div>
+      </div>
+      <button class="btn-kosongkan" id="btn-kosongkan" disabled>Kosongkan</button>
+    </div>
+
+    <div class="nota-cols">
+      <div>BARANG</div>
+      <div class="c-center">JML</div>
+      <div class="c-right">HARGA</div>
+      <div class="c-right">SUBTOTAL</div>
+      <div></div>
+    </div>
+
+    <div class="nota-list" id="nota-list">
+      <!-- diisi oleh JS; kalau kosong tampil empty-state -->
+    </div>
+
+    <div class="nota-foot">
+      <div class="total-row">
+        <span class="total-label">TOTAL</span>
+        <span class="total-val" id="total-display">Rp 0</span>
+      </div>
+      <button class="btn-simpan" id="btn-simpan">Bayar</button>
+    </div>
+  </section>
+
+  <!-- ---------- ENTRY + KEYPAD (kanan) ---------- -->
+  <aside class="entry-panel">
+
+    <div class="field-nama">
+      <label class="field-label" for="input-nama">NAMA BARANG</label>
+      <input type="text" id="input-nama" class="input-nama" placeholder="Ketik nama barang…" autocomplete="off">
+      <div class="saran-box" id="saran-box"></div>
+    </div>
+
+    <div class="draft-grid">
+      <div class="draft-box" id="box-harga" data-field="harga">
+        <div class="draft-box-label">HARGA SATUAN</div>
+        <div class="draft-box-val" id="draft-harga">Rp 0</div>
+      </div>
+      <div class="draft-box active" id="box-jumlah" data-field="jumlah">
+        <div class="draft-box-label">JUMLAH</div>
+        <div class="draft-box-val" id="draft-jumlah">1</div>
+      </div>
+    </div>
+
+    <div class="subtotal-row">
+      <span class="subtotal-label">Subtotal barang ini</span>
+      <span class="subtotal-val" id="subtotal-draft">Rp 0</span>
+    </div>
+
+    <div class="keypad" id="keypad">
+      <button class="key" data-digit="7">7</button>
+      <button class="key" data-digit="8">8</button>
+      <button class="key" data-digit="9">9</button>
+      <button class="key" data-digit="4">4</button>
+      <button class="key" data-digit="5">5</button>
+      <button class="key" data-digit="6">6</button>
+      <button class="key" data-digit="1">1</button>
+      <button class="key" data-digit="2">2</button>
+      <button class="key" data-digit="3">3</button>
+      <button class="key key-hapus" data-action="clear">Hapus</button>
+      <button class="key" data-digit="0">0</button>
+      <button class="key key-back" data-action="back">⌫</button>
+    </div>
+
+    <button class="btn-tambah" id="btn-tambah"><span class="btn-tambah-plus">+</span> Tambah ke Nota</button>
+  </aside>
+</main>
+
+<!-- ===================== PESANAN / RIWAYAT (placeholder) ===================== -->
+<main id="view-pesanan" class="pesanan-body view">
+  <div class="ps-summary">
+    <div class="ps-card">
+      <div class="ps-card-label">PESANAN AKTIF</div>
+      <div class="ps-card-val" id="ps-aktif">0</div>
+      <div class="ps-card-sub">belum selesai</div>
+    </div>
+    <div class="ps-card">
+      <div class="ps-card-label">TENGGAT DEKAT</div>
+      <div class="ps-card-val ps-card-val-merah" id="ps-urgent">0</div>
+      <div class="ps-card-sub">jatuh tempo ≤ 2 hari / lewat</div>
+    </div>
+    <div class="ps-card">
+      <div class="ps-card-label">BELUM DIBAYAR</div>
+      <div class="ps-card-val ps-card-val-oranye" id="ps-sisa">Rp 0</div>
+      <div class="ps-card-sub">total sisa tagihan</div>
+    </div>
+  </div>
+
+  <div class="ps-toolbar">
+    <div class="ps-filter">
+      <button class="ps-filter-btn" data-filter="semua">Semua</button>
+      <button class="ps-filter-btn active" data-filter="aktif">Aktif</button>
+      <button class="ps-filter-btn" data-filter="selesai">Selesai</button>
+    </div>
+    <button class="btn-pesanan-baru" id="btn-pesanan-baru"><span class="btn-plus">+</span> Pesanan Baru</button>
+  </div>
+
+  <div class="ps-list" id="ps-list"></div>
+</main>
+
+<main id="view-riwayat" class="riwayat-body view">
+  <div class="rw-summary">
+    <div class="rw-card">
+      <div class="rw-card-label">HARI INI</div>
+      <div class="rw-card-val" id="rw-hari-ini">Rp 0</div>
+      <div class="rw-card-sub"><span id="rw-hari-ini-count">0</span> transaksi</div>
+    </div>
+    <div class="rw-card">
+      <div class="rw-card-label">7 HARI TERAKHIR</div>
+      <div class="rw-card-val" id="rw-minggu">Rp 0</div>
+      <div class="rw-card-sub"><span id="rw-minggu-count">0</span> transaksi</div>
+    </div>
+    <div class="rw-card">
+      <div class="rw-card-label">RATA-RATA / TRANSAKSI</div>
+      <div class="rw-card-val rw-card-val-oranye" id="rw-rata">Rp 0</div>
+      <div class="rw-card-sub">7 hari terakhir</div>
+    </div>
+  </div>
+
+  <div class="rw-search">
+    <span class="rw-search-icon">🔍</span>
+    <input type="text" id="rw-search" class="rw-search-input" placeholder="Cari nama barang di riwayat…" autocomplete="off">
+  </div>
+
+  <div class="rw-list" id="rw-list"></div>
+</main>
+
+<!-- ===================== POPUP PERUBAHAN HARGA ===================== -->
+<!-- Muncul SETELAH transaksi tersimpan. Tidak pernah memblokir/menunda
+     penyimpanan — hanya memperbarui harga acuan untuk transaksi berikutnya. -->
+<div class="popup-overlay" id="popup-overlay">
+  <div class="popup-box">
+    <div class="popup-head">Harga berubah</div>
+    <div class="popup-body">
+      <div id="popup-daftar-perubahan"></div>
+      <p class="popup-catatan">Simpan harga baru ini untuk transaksi berikutnya?</p>
+    </div>
+    <div class="popup-tombol">
+      <button class="btn-popup-lewati" id="popup-lewati">Tidak, cuma kali ini</button>
+      <button class="btn-popup-simpan" id="popup-simpan">Ya, simpan harga baru</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== MODAL: PESANAN BARU ===================== -->
+<div class="modal-overlay" id="order-overlay">
+  <div class="modal-box modal-form">
+    <div class="modal-head">
+      <div class="modal-title">Pesanan Baru</div>
+      <button class="modal-close" id="order-close">×</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-field">
+        <label class="form-label" for="of-pelanggan">NAMA PELANGGAN</label>
+        <input type="text" id="of-pelanggan" class="form-input" placeholder="mis. Bu Sari" autocomplete="off">
+      </div>
+      <div class="form-field">
+        <label class="form-label" for="of-spek">PESANAN / SPEK</label>
+        <textarea id="of-spek" class="form-input form-textarea" placeholder="mis. Banner 3×1 m, flexi, 2 pcs"></textarea>
+      </div>
+      <div class="form-field">
+        <label class="form-label">DAFTAR BARANG / JASA <span class="form-label-opsional">(opsional, seperti nota)</span></label>
+        <div class="of-item-entry">
+          <input type="text" id="of-item-nama" class="form-input" placeholder="Nama barang/jasa" autocomplete="off">
+          <input type="number" id="of-item-harga" class="form-input" placeholder="Harga" min="0" inputmode="numeric">
+          <input type="number" id="of-item-jumlah" class="form-input" placeholder="Jml" min="1" value="1" inputmode="numeric">
+          <button type="button" class="btn-of-item-tambah" id="of-item-tambah" aria-label="Tambah barang">+</button>
+        </div>
+        <div class="of-item-list" id="of-item-list"></div>
+      </div>
+      <div class="form-grid-2">
+        <div class="form-field">
+          <label class="form-label" for="of-biaya">BIAYA TOTAL</label>
+          <input type="number" id="of-biaya" class="form-input" placeholder="0" min="0" inputmode="numeric">
+          <div class="form-hint">Otomatis dari daftar barang di atas — bisa diubah manual</div>
+        </div>
+        <div class="form-field">
+          <label class="form-label" for="of-bayar">UANG MUKA / DP</label>
+          <input type="number" id="of-bayar" class="form-input" placeholder="0" min="0" inputmode="numeric">
+        </div>
+      </div>
+      <div class="form-field">
+        <label class="form-label" for="of-deadline">TENGGAT SELESAI</label>
+        <input type="date" id="of-deadline" class="form-input">
+      </div>
+    </div>
+    <div class="modal-foot modal-foot-2">
+      <button class="btn-modal-batal" id="order-batal">Batal</button>
+      <button class="btn-modal-simpan" id="order-simpan">Simpan Pesanan</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== MODAL: DETAIL PESANAN (rincian barang) ===================== -->
+<div class="modal-overlay" id="detail-pesanan-overlay">
+  <div class="modal-box modal-form modal-detail-trx">
+    <div class="modal-head">
+      <div>
+        <div class="modal-title" id="detail-pesanan-pelanggan">—</div>
+        <div class="modal-sub" id="detail-pesanan-masuk">—</div>
+      </div>
+      <button class="modal-close" id="detail-pesanan-close">×</button>
+    </div>
+    <div class="modal-body">
+      <div class="detail-pesanan-spek" id="detail-pesanan-spek"></div>
+      <div class="detail-trx-list" id="detail-pesanan-list"></div>
+      <div class="detail-trx-total-row">
+        <span>Biaya Total</span>
+        <span class="detail-trx-total" id="detail-pesanan-biaya">Rp 0</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== MODAL: CATAT BAYAR ===================== -->
+<div class="modal-overlay" id="pay-overlay">
+  <div class="modal-box modal-form modal-pay">
+    <div class="modal-head">
+      <div class="modal-title">Catat Pembayaran</div>
+      <button class="modal-close" id="pay-close">×</button>
+    </div>
+    <div class="modal-body">
+      <div class="pay-info">
+        <div class="pay-pelanggan" id="pay-pelanggan">—</div>
+        <div class="pay-sisa-row">
+          <span>Sisa tagihan</span>
+          <span class="pay-sisa" id="pay-sisa">Rp 0</span>
+        </div>
+      </div>
+      <div class="form-field">
+        <label class="form-label" for="pay-jumlah">JUMLAH DIBAYAR SEKARANG</label>
+        <input type="number" id="pay-jumlah" class="form-input" placeholder="0" min="0" inputmode="numeric">
+        <button class="btn-pay-lunas" id="pay-lunas">Bayar Lunas (<span id="pay-lunas-nominal">Rp 0</span>)</button>
+      </div>
+    </div>
+    <div class="modal-foot modal-foot-2">
+      <button class="btn-modal-batal" id="pay-batal">Batal</button>
+      <button class="btn-modal-simpan btn-modal-simpan-hijau" id="pay-simpan">Simpan</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== MODAL: DETAIL TRANSAKSI (Riwayat) ===================== -->
+<div class="modal-overlay" id="detail-trx-overlay">
+  <div class="modal-box modal-form modal-detail-trx">
+    <div class="modal-head">
+      <div>
+        <div class="modal-title">Detail Transaksi</div>
+        <div class="modal-sub" id="detail-trx-waktu">—</div>
+      </div>
+      <button class="modal-close" id="detail-trx-close">×</button>
+    </div>
+    <div class="modal-body">
+      <div class="detail-trx-list" id="detail-trx-list"></div>
+      <div class="detail-trx-total-row">
+        <span>Total</span>
+        <span class="detail-trx-total" id="detail-trx-total">Rp 0</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== MODAL: PEMBAYARAN (kembalian) ===================== -->
+<div class="modal-overlay" id="bayar-overlay">
+  <div class="modal-box modal-form modal-bayar">
+    <div class="modal-head">
+      <div class="modal-title">Pembayaran</div>
+      <button class="modal-close" id="bayar-close">×</button>
+    </div>
+    <div class="modal-body">
+      <div class="bayar-total-row">
+        <span>Total belanja</span>
+        <span class="bayar-total" id="bayar-total">Rp 0</span>
+      </div>
+      <div class="form-field">
+        <label class="form-label" for="bayar-uang">UANG DITERIMA</label>
+        <input type="number" id="bayar-uang" class="form-input bayar-uang-input" placeholder="0" min="0" inputmode="numeric" autocomplete="off">
+        <div class="bayar-nominal" id="bayar-nominal"></div>
+      </div>
+      <div class="bayar-kembali-box" id="bayar-kembali-box">
+        <span class="bayar-kembali-label">Kembalian</span>
+        <span class="bayar-kembali" id="bayar-kembali">Rp 0</span>
+      </div>
+    </div>
+    <div class="modal-foot modal-foot-2">
+      <button class="btn-modal-batal" id="bayar-batal">Batal</button>
+      <button class="btn-modal-simpan" id="bayar-simpan" disabled>Simpan Transaksi</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== MODAL TUTORIAL ===================== -->
+<div class="modal-overlay" id="tutorial-overlay">
+  <div class="modal-box">
+    <div class="modal-head">
+      <div>
+        <div class="modal-title">Cara Pakai Kasir</div>
+        <div class="modal-sub">4 langkah sederhana</div>
+      </div>
+      <button class="modal-close" id="tutorial-close">×</button>
+    </div>
+    <div class="modal-body">
+      <div class="tut-step"><div class="tut-no">1</div><div><div class="tut-judul">Ketik nama barang</div><div class="tut-teks">Mulai ketik di kolom "Nama Barang". Kalau barang pernah dijual, pilih dari daftar saran — harga terisi otomatis.</div></div></div>
+      <div class="tut-step"><div class="tut-no">2</div><div><div class="tut-judul">Atur jumlah dengan keypad</div><div class="tut-teks">Ketuk kotak "Jumlah", lalu tekan angka di keypad besar. Ketuk "Harga Satuan" kalau mau ubah harga.</div></div></div>
+      <div class="tut-step"><div class="tut-no">3</div><div><div class="tut-judul">Tekan "Tambah ke Nota"</div><div class="tut-teks">Barang masuk ke daftar Nota di kiri. Ulangi untuk barang berikutnya sebanyak yang dibeli.</div></div></div>
+      <div class="tut-step"><div class="tut-no">4</div><div><div class="tut-judul">Tekan "Simpan Transaksi"</div><div class="tut-teks">Kalau semua barang sudah masuk, tekan tombol oranye besar. Transaksi tersimpan otomatis dan masuk ke Riwayat.</div></div></div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn-tutorial-selesai" id="tutorial-selesai">Mengerti, mulai transaksi</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== TOAST ===================== -->
+<div class="toast" id="toast"></div>
+
+<script src="app.js"></script>
+</body>
+</html>
